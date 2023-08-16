@@ -23,3 +23,36 @@ function updateTimer() {
         endGame(false);
     }
 }
+
+var quizQuestions = [
+    {
+        question: 'what is jvascript?',
+
+        answers: {
+            a: 'a coffee.',
+            b: 'a screenplay.',
+            c: 'a scripting/ programming language.'
+        },
+        correctAnswer: 'c'
+    },
+    {
+        question: 'can anybody code?',
+        
+        answers: {
+            a: 'no.',
+            b: 'yes.',
+            c: 'probably not.'
+        },
+        correctAnswer: 'b'
+    },
+    {
+        question: 'what is a string?',
+
+        answers: {
+            a: 'a series of text.',
+            b: 'something from your shirt.',
+            c: 'a combination of functions.'
+        },
+        correctAnswer: 'a'
+    }
+]
