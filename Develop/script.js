@@ -9,10 +9,9 @@ var timerInterval; // Declare the timerInterval variable
 
 function startGame() {
     startButton.disabled = true; // Disable the start button during the game
-    word = words[Math.floor(Math.random() * words.length)];
-    blanks = Array(word.length).fill("_");
     questionDisplay.textContent = "Time: " + timeLeft + " seconds"; // Update time display
     timerInterval = setInterval(updateTimer, 1000);
+    displayNextQuestion(); // Display the first quiz question
 }
 
 function updateTimer() {
@@ -24,9 +23,26 @@ function updateTimer() {
     }
 }
 
+function endGame(isWin) {
+
+}
+
+var currentQuestionIndex = 0; // Keep track of the current question
+
+function displayNextQuestion() {
+    if (currentQuestionIndex < quizQuestions.length) {
+        var currentQuestion = quizQuestions[currentQuestionIndex];
+        questionDisplay.textContent = currentQuestion.question;
+        // Add code to display answer choices and check user's selection
+    } else {
+        // All questions have been answered
+        endGame(true);
+    }
+}
+
 var quizQuestions = [
     {
-        question: 'what is jvascript?',
+        question: 'what is javascript?',
 
         answers: {
             a: 'a coffee.',
@@ -54,5 +70,25 @@ var quizQuestions = [
             c: 'a combination of functions.'
         },
         correctAnswer: 'a'
+    },
+    {
+        question: 'how do you link JavaScript to your HTML?',
+        
+        answers: {
+            a: 'you do not need to link the script file.',
+            b: 'src= Develop/script.js',
+            c: 'src= Develop/Java.Script.JS'
+        },
+        correctAnswer: 'b'
+    },
+    {
+        question: 'what is PR short for?',
+
+        answers: {
+            a: 'peace rate',
+            b: 'pre-record',
+            c: 'pull request'
+        },
+        correctAnswer: 'c'
     }
-]
+];
