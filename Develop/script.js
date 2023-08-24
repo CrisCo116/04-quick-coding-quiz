@@ -37,11 +37,12 @@ function displayNextQuestion() {
         questionDisplay.innerHTML += '<br>'; // Add line break
         var answerChoices = currentQuestion.answers;
 
-        for (var option in answerChoices) {
+        for (let option in answerChoices) {
             var answerButton = document.createElement('button');
             answerButton.textContent = answerChoices[option];
             answerButton.addEventListener('click', function () {
                 checkAnswer(option);
+                console.log(option)
             });
             questionDisplay.appendChild(answerButton);
         }
@@ -55,9 +56,11 @@ function checkAnswer(selectedOption) {
     var currentQuestion = quizQuestions[currentQuestionIndex];
     if (selectedOption === currentQuestion.correctAnswer) {
 
-    } else (selectedOption === currentQuestion.incorrectAnswer) 
-        prompt ('Wrong answer.')
-   
+    } else {
+         alert('Wrong answer.') 
+        timeLeft -=5}
+
+
     currentQuestionIndex++;
     displayNextQuestion();
 }
