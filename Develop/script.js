@@ -1,170 +1,149 @@
-var startButton = document.getElementById('startButton');
-var timeLeftDisplay = document.getElementById('timeLeft');
-var questionDisplay = document.getElementById('questionDisplay');
+var startButton = document.getElementById('start-button');
+var optionsContainer = document.getElementById('options');
+var questionContainer = document.getElementById('question');
+var gameOverMessage = document.getElementById('game-over');
 
-startButton.addEventListener('click', startGame);
+var currentQuestionIndex = 0;
+var score = 0;
+var timeLeft = 60;
+var timerInterval;
 
-var timeLeft = 20; // start time in seconds.
-var timerInterval; // Declare the timerInterval variable
-
-function startGame() {
-    startButton.disabled = true; // Disable the start button during the game
-    questionDisplay.textContent = "Time: " + timeLeft + " seconds"; // Update time display
-    timerInterval = setInterval(updateTimer, 1000);
-    displayNextQuestion();
-}
-
-function updateTimer() {
-    timeLeft--;
-    timeLeftDisplay.textContent = "Time: " + timeLeft + " seconds"; // Update time display
-    if (timeLeft === 0) {
-        clearInterval(timerInterval);
-        endGame(false);
-    }
-}
-
-function endGame(isWin) {
-    clearInterval(timerInterval);
-    questionDisplay.innerHTML = isWin ? "Congratulations, you won!" : "Time's up! Game over.";
-}
-
-var currentQuestionIndex = 0; // Keep track of the current question
-
-function displayNextQuestion() {
-    if (currentQuestionIndex < quizQuestions.length) {
-        var currentQuestion = quizQuestions[currentQuestionIndex];
-        questionDisplay.textContent = currentQuestion.question;
-        questionDisplay.innerHTML += '<br>'; // Add line break
-        var answerChoices = currentQuestion.answers;
-
-        for (let option in answerChoices) {
-            var answerButton = document.createElement('button');
-            answerButton.textContent = answerChoices[option];
-            answerButton.addEventListener('click', function () {
-                checkAnswer(option);
-                console.log(option)
-            });
-            questionDisplay.appendChild(answerButton);
-        }
-    } else {
-        // All questions have been answered
-        endGame(true);
-    }
-}
-
-function checkAnswer(selectedOption) {
-    var currentQuestion = quizQuestions[currentQuestionIndex];
-    if (selectedOption === currentQuestion.correctAnswer) {
-
-    } else {
-         alert('Wrong answer.') 
-        timeLeft -=5}
-
-
-    currentQuestionIndex++;
-    displayNextQuestion();
-}
-
-var quizQuestions = [
+var questions = [
     {
-        question: 'what is javascript?',
-
-        answers: {
-            a: 'a coffee.',
-            b: 'a screenplay.',
-            c: 'a scripting/ programming language.'
-        },
-        correctAnswer: 'c',
-        incorrectAnswer: ['a', 'b']
+        question: "What is the purpose of the 'useEffect' hook in React?",
+        options: [
+            "To manage state in functional components",
+            "To handle asynchronous operations and side effects",
+            "To create reusable components",
+            "To define the layout of a component"
+        ],
+        correctIndex: 1
     },
     {
-        question: 'can anybody code?',
-
-        answers: {
-            a: 'no.',
-            b: 'yes.',
-            c: 'probably not.'
-        },
-        correctAnswer: 'b',
-        incorrectAnswer: ['a', 'c']
+        question: "What does the acronym 'API' stand for?",
+        options: [
+            "Advanced Programming Interface",
+            "Application Programming Interface",
+            "Automated Programming Interface",
+            "Application Processing Interface"
+        ],
+        correctIndex: 1
     },
     {
-        question: 'what is a string?',
-
-        answers: {
-            a: 'a series of text.',
-            b: 'something from your shirt.',
-            c: 'a combination of functions.'
-        },
-        correctAnswer: 'a',
-        incorrectAnswer: ['b', 'c']
+        question: "What is the primary purpose of the 'npm' package manager?",
+        options: [
+            "To build user interfaces",
+            "To manage server-side logic",
+            "To handle package dependencies and distribution",
+            "To create database schemas"
+        ],
+        correctIndex: 2
     },
     {
-        question: 'how do you link JavaScript to your HTML?',
-
-        answers: {
-            a: 'you do not need to link the script file.',
-            b: 'src= Develop/script.js',
-            c: 'src= Develop/Java.Script.JS'
-        },
-        correctAnswer: 'b',
-        incorrectAnswer: ['a', 'c']
+        question: "In JavaScript, what does the 'DOM' stand for?",
+        options: [
+            "Data Object Model",
+            "Document Oriented Model",
+            "Document Object Model",
+            "Dynamic Output Model"
+        ],
+        correctIndex: 2
     },
-    {
-        question: 'what is PR short for?',
-
-        answers: {
-            a: 'peace rate',
-            b: 'pre-record',
-            c: 'pull request'
-        },
-        correctAnswer: 'c',
-        incorrectAnswer: ['a', 'b']
-    }
 ];
-var userScore = 0;
-var initialsInput = document.getElementById('initials');
-var submitInitialsButton = document.getElementById('submitInitials');
 
-var scores = JSON.parse(localStorage.getItem('scores')) || [];
+function startQuiz() {
+    startButton.classList.add('hide');
+    optionsContainer.style.display = 'block';
+    questionContainer.style.display = 'block';
 
-// Function to update the displayed scores
-function updateScoreList() {
-    var scoreList = document.getElementById('scoreList');
-    scoreList.innerHTML = '';
+    displayQuestion(currentQuestionIndex);
+    startTimer(); 
 
-    scores.forEach(function (score) {
-        var listItem = document.createElement('li');
-        listItem.textContent = score.initials + ' - Score: ' + score.score;
-        scoreList.appendChild(listItem);
+    optionsContainer.addEventListener('click', checkAnswer);
+}
+
+function displayQuestion(index) {
+    questionContainer.textContent = questions[index].question;
+    optionsContainer.innerHTML = '';
+
+    questions[index].options.forEach(function(option, optionIndex) {
+        var optionButton = document.createElement('button');
+        optionButton.textContent = option;
+        optionButton.classList.add('btn', 'btn-info', 'btn-block', 'mb-2');
+        optionButton.dataset.index = optionIndex;
+        optionsContainer.appendChild(optionButton);
     });
 }
 
-updateScoreList();
+function checkAnswer(event) {
+    var selectedOptionIndex = event.target.dataset.index;
+    var correctIndex = questions[currentQuestionIndex].correctIndex;
 
-function submitInitials() {
-    var userInitials = initialsInput.value.trim();
-
-    if (userInitials !== "") {
-        scores.push({ initials: userInitials, score: userScore });
-
-        localStorage.setItem('scores', JSON.stringify(scores));
-
-        updateScoreList();
-
-        initialsInput.value = '';
+    if (selectedOptionIndex == correctIndex) {
+        score++;
     } else {
-        alert('Please enter your initials.');
+        timeLeft -= 10; 
+    }
+
+    currentQuestionIndex++;
+
+    if (currentQuestionIndex < questions.length) {
+        displayQuestion(currentQuestionIndex);
+    } else {
+        endQuiz();
     }
 }
 
-function updateTimer() {
-    timeLeft--;
-    timeLeftDisplay.textContent = "Time: " + timeLeft + " seconds"; 
-    if (timeLeft === 0) {
-        clearInterval(timerInterval);
-        endGame(false);
-    }
+function startTimer() {
+    document.getElementById('time').textContent = timeLeft; 
+    timerInterval = setInterval(function() {
+        timeLeft--;
 
-    userScore = timeLeft;
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            endQuiz();
+        } else {
+            document.getElementById('time').textContent = timeLeft; 
+        }
+    }, 1000);
 }
+
+function endQuiz() {
+    clearInterval(timerInterval);
+    questionContainer.textContent = '';
+    optionsContainer.style.display = 'none';
+    gameOverMessage.textContent = 'Game Over! Your score is ' + score + '.';
+    gameOverMessage.style.display = 'block';
+    document.getElementById('score-form').style.display = 'block'; 
+}
+
+startButton.addEventListener('click', startQuiz);
+
+var highScores = [];
+
+function displayHighScores() {
+    var highScoresList = document.getElementById('high-scores-list');
+    highScoresList.innerHTML = ''; 
+
+    highScores.sort(function(a, b) {
+        return b.score - a.score;
+    });
+
+    highScores.forEach(function(score, index) {
+        var li = document.createElement('li');
+        li.textContent = (index + 1) + ". " + score.initials + " - " + score.score;
+        highScoresList.appendChild(li);
+    });
+
+    document.getElementById('high-scores').style.display = 'block';
+    document.getElementById('game-over').style.display = 'none';
+}
+
+var scoreForm = document.getElementById('score-form');
+scoreForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+    var userInitials = document.getElementById('initials').value;
+    var userScore = { initials: userInitials, score: score };
+    highScores.push(userScore);
+    displayHighScores();
+});
