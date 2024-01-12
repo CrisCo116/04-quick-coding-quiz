@@ -1,5 +1,5 @@
 # 04-quick-coding-quiz
-## Simple Coding Quiz
+## Quick Coding Quiz
 This is a basic coding quiz with multiple-choice questions. You can test your coding knowledge and see your final score.
 
 ## How to Use
