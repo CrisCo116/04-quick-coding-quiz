@@ -122,3 +122,49 @@ var quizQuestions = [
         incorrectAnswer: ['a', 'b']
     }
 ];
+var userScore = 0;
+var initialsInput = document.getElementById('initials');
+var submitInitialsButton = document.getElementById('submitInitials');
+
+var scores = JSON.parse(localStorage.getItem('scores')) || [];
+
+// Function to update the displayed scores
+function updateScoreList() {
+    var scoreList = document.getElementById('scoreList');
+    scoreList.innerHTML = '';
+
+    scores.forEach(function (score) {
+        var listItem = document.createElement('li');
+        listItem.textContent = score.initials + ' - Score: ' + score.score;
+        scoreList.appendChild(listItem);
+    });
+}
+
+updateScoreList();
+
+function submitInitials() {
+    var userInitials = initialsInput.value.trim();
+
+    if (userInitials !== "") {
+        scores.push({ initials: userInitials, score: userScore });
+
+        localStorage.setItem('scores', JSON.stringify(scores));
+
+        updateScoreList();
+
+        initialsInput.value = '';
+    } else {
+        alert('Please enter your initials.');
+    }
+}
+
+function updateTimer() {
+    timeLeft--;
+    timeLeftDisplay.textContent = "Time: " + timeLeft + " seconds"; 
+    if (timeLeft === 0) {
+        clearInterval(timerInterval);
+        endGame(false);
+    }
+
+    userScore = timeLeft;
+}
